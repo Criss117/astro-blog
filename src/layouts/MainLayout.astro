@@ -20,6 +20,12 @@ const { title, description = SITE_CONFIG.description } = Astro.props;
     <title>
       {title ? `${title} | ${SITE_CONFIG.title}` : SITE_CONFIG.title}
     </title>
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href={`${Astro.site}rss.xml`}
+      title={SITE_CONFIG.title}
+    />
     <ViewTransitions />
   </head>
   <body class="bg-gray-900">
