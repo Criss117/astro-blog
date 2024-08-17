@@ -1,0 +1,79 @@
+---
+import { Image } from "astro:assets";
+import { getEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import Title from "@/components/Title.astro";
+import { Formatter } from "@/lib/utils/formatter";
+
+export const getStaticPaths = (async () => {
+  const collection = await getCollection("blog");
+
+  return collection.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+
+const { data } = post;
+
+const { Content, headings } = await post.render();
+
+const author = await getEntry("author", data.author.id);
+---
+
+<BlogLayout title={data.title}>
+  <Title>
+    {data.title}
+  </Title>
+  <a
+    class="flex gap-x-2 items-center my-10 hover:no-underline"
+    href={`/blog/${author.id}`}
+  >
+    <Image
+      src={author.data.avatar}
+      alt={author.data.name}
+      width={50}
+      height={50}
+      class="rounded-full"
+    />
+    <div>
+      <h4 class="text-md text-gray-400">{author.data.name}</h4>
+      <p class="text-sm text-gray-500 my-0">
+        {Formatter.formatDate(data.date)}
+      </p>
+    </div>
+  </a>
+
+  <Image
+    src={data.image}
+    alt={data.title}
+    width={600}
+    height={220}
+    transition:name={`${post.slug}-${data.author}`}
+    class="object-cover w-full h-[250px] my-5 rounded-md"
+  />
+
+  <!-- Tabla de contenido -->
+  <ol>
+    {
+      headings.map((heading, index) => (
+        <li>
+          <a href={`#${heading.slug}`}>
+            {index + 1} - {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <Content />
+
+  <div class="my-20">
+    <a href="#top">Ir Arriba</a>
+  </div>
+</BlogLayout>

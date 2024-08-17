@@ -1,0 +1,35 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import { SITE_CONFIG } from "@/lib/config/site-config";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE_CONFIG.description } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>
+      {title ? `${title} | ${SITE_CONFIG.title}` : SITE_CONFIG.title}
+    </title>
+    <ViewTransitions />
+  </head>
+  <body class="bg-gray-900">
+    <main class="mb-10 max-w-5xl m-auto p-2">
+      <nav class="flex justify-between flex-row">
+        <a href="/blog/1" class="text-blue-500 hover:underline">Blog paginado</a
+        >
+        <a href="/authors" class="text-blue-500 hover:underline">Autores</a>
+      </nav>
+      <slot />
+    </main>
+  </body>
+</html>

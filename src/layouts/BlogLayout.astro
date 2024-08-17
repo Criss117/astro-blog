@@ -1,0 +1,39 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import { SITE_CONFIG } from "@/lib/config/site-config";
+import "../styles/blog.css";
+import ReturnBtn from "@/components/ReturnBtn.astro";
+
+// const { ...rest } = Astro.props;
+
+// const frontMatter = rest.frontmatter;
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = SITE_CONFIG.title, description = SITE_CONFIG.description } =
+  Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{`${title} | ${SITE_CONFIG.title}`}</title>
+    <ViewTransitions />
+  </head>
+  <body class="bg-gray-900">
+    <main class="mb-10 max-w-5xl m-auto p-2">
+      <nav class="flex gap-x-2 items-center my-10 justify-between">
+        <a href="/">Home</a>
+        <ReturnBtn />
+      </nav>
+      <slot />
+    </main>
+  </body>
+</html>

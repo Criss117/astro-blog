@@ -1,0 +1,57 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+// Type GetStaticPaths de Astro
+import BlogPost from "@/components/BlogPost.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
+import Title from "@/components/Title.astro";
+import { SITE_CONFIG } from "@/lib/config/site-config";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const collection = await getCollection("blog");
+  return paginate(collection, { pageSize: 2 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<MainLayout>
+  <div class="py-10 mx-auto">
+    <Title>{SITE_CONFIG.title}</Title>
+    <a href="/" class="text-blue-500 hover:underline">Blog no paginado</a>
+  </div>
+
+  <section class="bg-gray-900" aria-label="Entradas de blog">
+    <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
+      {page.data.map((post) => <BlogPost post={post} />)}
+    </div>
+  </section>
+
+  <section aria-label="Controles" class="flex justify-between mt-10">
+    <a
+      id="a-nav"
+      href={page.url.prev}
+      class:list={{
+        disabled: !page.url.prev,
+      }}>Anteriores</a
+    >
+
+    <a
+      id="a-nav"
+      href={page.url.next}
+      class:list={{
+        disabled: !page.url.next,
+      }}>Siguientes</a
+    >
+  </section>
+</MainLayout>
+
+<style>
+  #a-nav {
+    @apply bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer;
+  }
+
+  .disabled {
+    @apply bg-gray-600 hover:bg-gray-600;
+  }
+</style>
